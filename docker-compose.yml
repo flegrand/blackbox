@@ -1,0 +1,22 @@
+version: "3.1"
+
+services:
+  blackbox-exporter:
+    image: prom/blackbox-exporter
+    networks:
+      - monitoring
+    ports:
+      - 9115:9115
+    volumes:
+      - ./blackbox.yml:/config/blackbox.yml
+    labels:
+      container-type: "monitoring"
+    deploy:
+      placement:
+        constraints: [node.labels.node-role == infra]
+    command: -config.file=/config/blackbox.yml
+
+networks:
+    monitoring:
+      external:
+        name: monitoring
